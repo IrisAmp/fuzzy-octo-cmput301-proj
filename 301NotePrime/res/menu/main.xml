@@ -13,7 +13,7 @@
         android:orderInCategory="2"
         android:showAsAction="ifRoom"
         android:title="@string/action_archive"
-        android:icon="@drawable/ic_action_archive"/>
+        android:icon="@drawable/ic_action_settings"/>
         
     <item
         android:id="@+id/action_settings"

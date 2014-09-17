@@ -1,0 +1,11 @@
+<resources>
+
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    
+    <dimen name="activity_horizontal_less_margin">8dp</dimen>
+    <dimen name="activity_vertical_less_margin">8dp</dimen>
+    
+    <dimen name="activity_no_margin">0dp</dimen>
+
+</resources>

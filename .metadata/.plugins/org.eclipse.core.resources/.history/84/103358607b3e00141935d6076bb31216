@@ -1,0 +1,59 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_vertical_less_margin"
+    android:background="@color/default_bg"
+    tools:context=".MainActivity" >
+
+    <LinearLayout
+        android:background="@color/default_highlight"
+        android:id="@+id/linearLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" >
+
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="bottom"
+            android:ems="10"
+            android:hint="@string/quick_note_hint"
+            android:inputType="textMultiLine" >
+
+            <requestFocus />
+        </EditText>
+
+        <ImageButton
+            android:id="@+id/button1"
+            android:contentDescription="@string/accessibility_accept_button"
+            android:src="@drawable/ic_action_accept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="bottom" />
+
+        <ImageButton
+            android:id="@+id/button2"
+            android:contentDescription="@string/accessibility_overflow_button"
+            android:src="@drawable/ic_action_overflow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="bottom" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="22dp" >
+    </ListView>
+
+</RelativeLayout>

@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="This is a lot of text whose purpose is to see what happens to this asshole thing when theres many lines."
+            android:hint="@string/quick_note_hint"
             android:inputType="textMultiLine" >
 
             <requestFocus />

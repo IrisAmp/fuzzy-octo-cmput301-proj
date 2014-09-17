@@ -22,6 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="ca.yuey.noteprime301.NewNoteActivity"
+            android:label="@string/title_activity_new_note"
+            android:parentActivityName="ca.yuey.noteprime301.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.yuey.noteprime301.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

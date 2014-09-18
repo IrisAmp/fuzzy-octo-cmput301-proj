@@ -7,38 +7,38 @@ public class NotesArchive
 implements Serializable
 {
 	private static final long serialVersionUID = 7092467508669329490L;
-	private String archiveID;
 	
 	private ArrayList<Note> notes;
-	private int notesSize;
 	private ArrayList<Note> archive;
-	private int archiveSize;
 	
-	public NotesArchive(String id)
+	public NotesArchive()
 	{
-		archiveID = id;
-		notesSize = 0;
-		archiveSize = 0;
+		notes = new ArrayList<Note>();
+		archive = new ArrayList<Note>();
 	}
 	
 	/*========================================================================
 	 * Accessors
 	 */
-	public String id()
-	{
-		return archiveID;
-	}
 	public ArrayList<Note> getNotes()
 	{
 		ArrayList<Note> clone = new ArrayList<Note>();
 		clone.addAll(notes);
 		return clone;
 	}
+	public int getNotesSize()
+	{
+		return notes.size();
+	}
 	public ArrayList<Note> getArchive()
 	{
 		ArrayList<Note> clone = new ArrayList<Note>();
 		clone.addAll(archive);
 		return clone;
+	}
+	public int getArchiveSize()
+	{
+		return archive.size();
 	}
 	public ArrayList<Note> getAllNotes()
 	{
@@ -66,12 +66,10 @@ implements Serializable
 		if (n.isArchived())
 		{
 			archive.add(n);
-			archiveSize ++;
 		}
 		else
 		{
 			notes.add(n);
-			notesSize ++;
 		}
 	}
 	public void addNotes(ArrayList<Note> notes)

@@ -16,28 +16,47 @@
 package ca.yuey.models;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Note
 implements Serializable
 {
 	private static final long serialVersionUID = -6518181418798265714L;
 	
-	private String name;
+	private String title;
 	private String desc;
+	private final Date created;
+	private Date modified;
 	private boolean archived;
 	
-	public Note() { }
+	@SuppressWarnings("unused")
+	private Note() // Private. Shouldn't make a new note with no data.
+	{ 
+		created = new Date();
+	}
 	public Note(String s)
 	{
-		desc = s;
+		this.created = new Date();
+		this.modified = new Date();
+		this.title = s;
+		this.desc = "";
+		this.archived = false;
+	}
+	public Note(String title, String desc)
+	{
+		this.created = new Date();
+		this.modified = new Date();
+		this.title = title;
+		this.desc = desc;
+		this.archived = false;
 	}
 	
 	/*========================================================================
 	 * Accessors
 	 */
-	public String getName()
+	public String getTitle()
 	{
-		return name;
+		return title;
 	}
 	public String getDesc()
 	{
@@ -47,5 +66,16 @@ implements Serializable
 	{
 		return archived;
 	}
+	public Date getCreated()
+	{
+		return created;
+	}
+	public Date getModified()
+	{
+		return modified;
+	}
 	
+	/*
+	 * 
+	 */
 }

@@ -1,2 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy/>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="android.R"/>
+<fullyQualifiedTypeName name="android.R.layout"/>
+<fullyQualifiedTypeName name="ca.yuey.noteprime301.R"/>
+<fullyQualifiedTypeName name="ca.yuey.noteprime301.R.layout"/>
+<fullyQualifiedTypeName name="ca.yuey.noteprime301.R.id"/>
+<fullyQualifiedTypeName name="android.widget.TextView"/>
+<fullyQualifiedTypeName name="java.util.Date"/>
+</qualifiedTypeNameHistroy>

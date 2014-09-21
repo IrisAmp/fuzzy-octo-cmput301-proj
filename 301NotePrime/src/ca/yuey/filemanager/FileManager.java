@@ -34,7 +34,8 @@ import ca.yuey.noteprime301.Helper;
 import android.content.Context;
 import android.util.Log;
 
-public class FileManager {
+public class FileManager
+{
 	
 	private static final String FILENAME = "fileManager.ser";
 	private static final int TIMEOUT_MAX = 3;
@@ -45,7 +46,7 @@ public class FileManager {
 	private static ObjectOutputStream oos;
 	private static ObjectInputStream ois;
 	
-	private FileManager() {}
+	private FileManager() {/*  */}
 	
 	public static final NotesArchive getNotes(Context context)
 	{

@@ -49,10 +49,10 @@
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/linearLayout1"
-        android:layout_centerHorizontal="true" >
-
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="22dp" >
     </ListView>
 
 </RelativeLayout>

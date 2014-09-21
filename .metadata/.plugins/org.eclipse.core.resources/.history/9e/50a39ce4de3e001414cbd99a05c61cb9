@@ -38,7 +38,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginBottom="@dimen/activity_vertical_less_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_less_margin"
             android:layout_marginTop="@dimen/activity_vertical_less_margin"
             android:layout_weight="0"
             android:contentDescription="@string/accessibility_accept_button"
@@ -49,10 +48,10 @@
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/linearLayout1"
-        android:layout_centerHorizontal="true" >
-
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="22dp" >
     </ListView>
 
 </RelativeLayout>

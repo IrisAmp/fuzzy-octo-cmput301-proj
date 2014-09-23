@@ -24,6 +24,7 @@ package ca.yuey.adapters;
 import java.util.ArrayList;
 
 import ca.yuey.models.Note;
+import ca.yuey.models.NotesFile;
 import ca.yuey.noteprime301.R;
 
 import android.app.Activity;
@@ -39,18 +40,27 @@ extends BaseAdapter
 {
 	private Context context;
 	private LayoutInflater mInflater = null;
-	private ArrayList<Note> data;
+	private NotesFile data;
+	private final boolean archive;
 	
-	public NotesListAdapter(Context context, ArrayList<Note> data)
+	public NotesListAdapter(Context context, NotesFile data, boolean archive)
 	{
 		this.context = context;
 		this.data = data;
+		this.archive = archive;
 	}
 	
 	@Override
 	public int getCount()
 	{
-		return data.size();
+		if(archive)
+		{
+			return this.data.sizeArchive();
+		}
+		else
+		{
+			return this.data.size();
+		}
 	}
 
 	@Override
@@ -78,12 +88,18 @@ extends BaseAdapter
 	        convertView = mInflater.inflate(R.layout.list_item_note, null);
 		}
 		
-		TextView title = (TextView) convertView.findViewById(R.id.textViewTitle);
-		TextView detail = (TextView) convertView.findViewById(R.id.textViewDetail);
+		// Set up the view
+		TextView title = (TextView) convertView.findViewById(R.id.noteItemTitle);
+		TextView detail = (TextView) convertView.findViewById(R.id.noteItemDetail);
+		TextView due = (TextView) convertView.findViewById(R.id.noteItemDue);
+
+		ArrayList<String> strings = item.getInfo();
 		
-		title.setText(item.getTitle());
-		detail.setText(item.getDesc());
+		title.setText(strings.get(0));
+		detail.setText(strings.get(1));
+		due.setText(strings.get(2));
 		
+		// Ship it back
 		return convertView;
 	}
 }

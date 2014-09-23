@@ -16,66 +16,163 @@
 package ca.yuey.models;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class Note
-implements Serializable
+implements Serializable, Comparable<Note>
 {
 	private static final long serialVersionUID = -6518181418798265714L;
 	
-	private String title;
-	private String desc;
 	private final Date created;
 	private Date modified;
-	private boolean archived;
+	private Date due;
 	
-	@SuppressWarnings("unused")
-	private Note() // Private. Shouldn't make a new note with no data.
-	{ 
-		created = new Date();
-	}
-	public Note(String s)
-	{
-		this.created = new Date();
-		this.modified = new Date();
-		this.title = s;
-		this.desc = "";
-		this.archived = false;
-	}
-	public Note(String title, String desc)
-	{
-		this.created = new Date();
-		this.modified = new Date();
-		this.title = title;
-		this.desc = desc;
-		this.archived = false;
-	}
+	private String title;
+	private String detail;
+	private boolean done;
 	
-	/*========================================================================
-	 * Accessors
+	/*/=======================================================================
+		Constructors 
 	 */
+	@SuppressWarnings("unused")
+	private Note() // Private. Don't make a new note with no data.
+	{
+		this.created = new Date();
+	}
+	public Note(String t, String d, Date due)
+	{
+		this.created = new Date();
+		this.modified = (Date) created.clone();
+		
+		this.title = t;
+		this.detail = d;
+		this.due = due;
+		this.done = false;
+	}
+	
+	/*/=======================================================================
+		Accessors
+	 */
+	public ArrayList<String> getInfo()
+	{
+		// Return an array list of Strings containing the object's data.
+		ArrayList<String> result = new ArrayList<String>();
+		
+		result.add(this.title);
+		result.add(this.detail);
+		
+		if (this.due != null)
+		{
+			DateFormat sf = new SimpleDateFormat("MMMM dd, hh:mm a", Locale.CANADA);
+			result.add(sf.format(this.due));
+		}
+		else
+		{
+			result.add(new String("No due date"));
+		}
+		
+		return result;
+	}
 	public String getTitle()
 	{
-		return title;
+		return this.title;
 	}
-	public String getDesc()
+	public String getDetail()
 	{
-		return desc;
-	}
-	public boolean isArchived()
-	{
-		return archived;
+		return this.detail;
 	}
 	public Date getCreated()
 	{
-		return created;
+		return (Date) this.created.clone();
 	}
 	public Date getModified()
 	{
-		return modified;
+		return (Date) this.modified.clone();
+	}
+	public Date getDue()
+	{
+		return (Date) this.modified.clone();
+	}
+	public boolean isFinished()
+	{
+		return this.done;
 	}
 	
-	/*
-	 * 
+	/*/=======================================================================
+		Modifiers
 	 */
+	public Note modify(String title, String detail, Date due)
+	{
+		if(title != null)
+		{
+			this.title = title;
+		}
+		if(detail != null)
+		{
+			this.detail = detail;
+		}
+		if(due != null)
+		{
+			this.due = due;
+		}
+		
+		this.modified = new Date();
+		return this;
+	}
+	public void notifyModified()
+	{
+		this.modified = new Date();
+	}
+	public void finish()
+	{
+		this.done = true;
+	}
+	public void unFinish()
+	{
+		this.done = false;
+	}
+	
+	/*/=======================================================================
+		Auxiliary
+	 */
+	@Override
+	public int compareTo(Note other)
+	{
+		// Natural ordering of Note objects. Returns the result of the
+		// compareTo method of the due dates if both notes have one. Returns
+		// -1 if this Note has a due date but not other (and vice versa).
+		// If neither has a due date, returns the result of the comparison of
+		// their creation dates.
+		if(this.due != null && other.due != null)
+		{
+			return this.due.compareTo(other.due);
+		}
+		if(this.due != null)
+		{
+			return -1;
+		}
+		if(other.due != null)
+		{
+			return 1;
+		}
+		return this.created.compareTo(other.created);
+	}
+	private int compareBooleans(boolean first, boolean second)
+	{
+		
+	}
+	
+	@Override
+	public boolean equals(Object other)
+	{
+		if (!(other instanceof Note)) return false;
+		
+		if (this.compareTo((Note)other) == 0) return true;
+		
+		return false;
+	}
 }

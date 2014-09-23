@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import ca.yuey.models.NotesArchive;
+import ca.yuey.models.NotesFile;
 import ca.yuey.noteprime301.Helper;
 
 
@@ -36,7 +36,6 @@ import android.util.Log;
 
 public class FileManager
 {
-	
 	private static final String FILENAME = "fileManager.ser";
 	private static final int TIMEOUT_MAX = 3;
 	private static int retryTimeout = 0;
@@ -46,11 +45,11 @@ public class FileManager
 	private static ObjectOutputStream oos;
 	private static ObjectInputStream ois;
 	
-	private FileManager() {/*  */}
+	private FileManager() {}
 	
-	public static final NotesArchive getNotes(Context context)
+	public static final NotesFile getNotes(Context context)
 	{
-		NotesArchive result = null;
+		NotesFile result = null;
 		
 		try
 		{
@@ -60,14 +59,14 @@ public class FileManager
 		{
 			// If the file does not exist just return a new NotesArchive
 			Log.d(Helper.DEBUG_TAG, "FileNotFoundException occured in method FileManager.getNotes", e);
-			return new NotesArchive();
+			return new NotesFile(null, null);
 		}
 		
 		try
 		{
 			// Try to get the object from the file.
 			ois = new ObjectInputStream(fis);
-			result = (NotesArchive) ois.readObject();
+			result = (NotesFile) ois.readObject();
 			
 			// Cleanup
 			ois.close(); fis.close();			
@@ -81,6 +80,7 @@ public class FileManager
 		}
 		catch (ClassNotFoundException e)
 		{
+			// Something really f**ked up seriously what 
 			Log.d(Helper.DEBUG_TAG, "ClassNotFoundException occured in method FileManager.getNotes", e);
 			return retryLoad(context);
 		}
@@ -88,7 +88,7 @@ public class FileManager
 		retryTimeout = 0;
 		return result;
 	}
-	private static final NotesArchive retryLoad(Context context)
+	private static final NotesFile retryLoad(Context context)
 	{
 		if(retryTimeout < TIMEOUT_MAX)
 		{
@@ -102,7 +102,7 @@ public class FileManager
 		}
 	}
 	
-	public static final void saveNotes(Context context, NotesArchive archive)
+	public static final void saveNotes(Context context, NotesFile archive)
 	{
 		try
 		{
@@ -128,7 +128,7 @@ public class FileManager
 			retrySave(context, archive);
 		}
 	}
-	private static final void retrySave(Context context, NotesArchive archive)
+	private static final void retrySave(Context context, NotesFile archive)
 	{
 		if(retryTimeout < TIMEOUT_MAX)
 		{

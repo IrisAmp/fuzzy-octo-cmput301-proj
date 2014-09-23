@@ -1,42 +1,44 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/activity_no_margin"
     android:background="@color/default_highlight" >
 
-    <LinearLayout
+    <CheckBox
+        android:id="@+id/noteItemCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/activity_horizontal_less_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_less_margin"
-        android:layout_toLeftOf="@+id/checkBox1"
+        android:layout_margin="@dimen/activity_horizontal_less_margin" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/noteItemCheckBox"
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/textViewTitle"
+            android:id="@+id/noteItemTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Large Text"
+            android:text="@string/list_item_title"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
-            android:id="@+id/textViewDetail"
+            android:id="@+id/noteItemDetail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Small Text"
+            android:text="@string/list_item_detail"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
+        <TextView
+            android:id="@+id/noteItemDue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/list_item_due"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
-	
-	<CheckBox
-	    android:id="@+id/checkBox1"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentRight="true"
-	    android:layout_centerVertical="true"
-	    android:layout_marginLeft="@dimen/activity_horizontal_less_margin"
-	    android:layout_marginRight="@dimen/activity_horizontal_less_margin" />
 
 </RelativeLayout>

@@ -28,7 +28,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import ca.yuey.models.NotesFile;
-import ca.yuey.noteprime301.Helper;
 
 
 import android.content.Context;
@@ -58,7 +57,7 @@ public class FileManager
 		catch (FileNotFoundException e)
 		{
 			// If the file does not exist just return a new NotesArchive
-			Log.d(Helper.DEBUG_TAG, "FileNotFoundException occured in method FileManager.getNotes", e);
+			Log.d("getNotes", "FileNotFoundException occured in method FileManager.getNotes", e);
 			return new NotesFile(null, null);
 		}
 		
@@ -75,13 +74,13 @@ public class FileManager
 		{
 			// There was some sort of error in getting the object from file.
 			// Try the operation again a few times.
-			Log.d(Helper.DEBUG_TAG, "IOException occured in method FileManager.getNotes", e);
+			Log.d("getNotes", "IOException occured in method FileManager.getNotes", e);
 			return retryLoad(context);
 		}
 		catch (ClassNotFoundException e)
 		{
 			// Something really f**ked up seriously what 
-			Log.d(Helper.DEBUG_TAG, "ClassNotFoundException occured in method FileManager.getNotes", e);
+			Log.d("getNotes", "ClassNotFoundException occured in method FileManager.getNotes", e);
 			return retryLoad(context);
 		}
 		
@@ -110,7 +109,7 @@ public class FileManager
 		}
 		catch (FileNotFoundException e)
 		{
-			Log.d(Helper.DEBUG_TAG, "FileNotFoundException occured in method FileManager.saveNotes", e);
+			Log.d("retryLoad", "FileNotFoundException occured in method FileManager.saveNotes", e);
 			retrySave(context, archive);
 		}
 		
@@ -124,7 +123,7 @@ public class FileManager
 		}
 		catch(IOException e)
 		{
-			Log.d(Helper.DEBUG_TAG, "IOException occured in method FileManager.saveNotes", e);
+			Log.d("retryLoad", "IOException occured in method FileManager.saveNotes", e);
 			retrySave(context, archive);
 		}
 	}

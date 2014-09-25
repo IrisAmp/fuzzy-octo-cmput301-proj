@@ -21,26 +21,35 @@
 */
 package ca.yuey.noteprime301;
 
+import java.util.Date;
+
 import ca.yuey.adapters.NotesListAdapter;
 import ca.yuey.filemanager.FileManager;
 import ca.yuey.models.Note;
 import ca.yuey.models.NotesFile;
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 public class MainActivity
 extends Activity
 {
-	private static NotesFile notes = new NotesFile(null, null);
-	private static NotesListAdapter notesAdapter;
+	private NotesFile notes;
+	private NotesListAdapter notesAdapter;
 	
 	private ImageButton quickAcceptButton;
+	private ListView noteList;
+	private EditText quickEntry;
 	
 	/*
 	 * (non-Javadoc)
@@ -54,35 +63,62 @@ extends Activity
     {
         // Super
         super.onCreate(savedInstanceState);
-        
+                
     	// Housekeeping
         setContentView(R.layout.activity_main);
         
+        // Get persistent data
+        this.notes = new NotesFile(null, null);
+        
         // Grab the views we need.
-        ListView noteList = (ListView) this.findViewById(R.id.listView1);
     	this.quickAcceptButton = (ImageButton) this.findViewById(R.id.buttonQuickAccept);
+        this.noteList = (ListView) this.findViewById(R.id.listView1);
+        this.quickEntry = (EditText) this.findViewById(R.id.editTextQuickNote);
         
         // Attach the View adapter to our notes object.
-        notesAdapter = new NotesListAdapter(this, MainActivity.notes, false);
-        noteList.setAdapter(MainActivity.notesAdapter);
-        
+        this.notesAdapter = new NotesListAdapter(this, this.notes, false);
+        this.noteList.setAdapter(this.notesAdapter);
+    	
         // Attach an onClick listener to the accept button.
         this.quickAcceptButton.setOnClickListener(new View.OnClickListener()
         	{
 				@Override
 				public void onClick(View v)
 				{
-					MainActivity.this.onClickQuickNote(v);
+					MainActivity.this.onClickQuickNote();
 				}
         	});
         
-        this.generateData(notes);
+        // Attach an onEditorActionListener to the EditText too.
+        this.quickEntry.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
+
+			@Override
+			public boolean onEditorAction(TextView view, int actionID, KeyEvent event)
+			{
+				if (actionID == EditorInfo.IME_ACTION_DONE)
+				{
+					MainActivity.this.onClickQuickNote();
+					return true;
+				}
+				return false;
+			}
+        	
+        });
+
+        //this.generateData(notes);
         
         // Start FIO. The AsyncLoader will notify the UI thread to update the
         // ListView when it finishes FIO, but for the meantime we can show
         // a progress spinner.
         // TODO: Reimplement the Loader to actually work
-        notes = FileManager.getNotes(this);
+        //notes = FileManager.getNotes(this);
+    }
+    
+    @Override
+    protected void onResume()
+    {
+    	super.onResume();
     }
 
 	/*
@@ -129,15 +165,21 @@ extends Activity
     /*
      * Layout Callbacks
      */
-    public void onClickQuickNote(View button)
+    private void onClickQuickNote()
     {
+    	EditText entry = (EditText) this.findViewById(R.id.editTextQuickNote);
+    	String msg = entry.getText().toString();
+    	
+    	Log.d("onClickQuickNote", msg);
+    	
+    	if (msg.trim().isEmpty()) return;
+    	
     	// Add the new entry as a note with only title.
-    	MainActivity.notes.add(
-    			new Note(getQuickEntry(), null, null));
-    	MainActivity.notesAdapter.notifyDataSetChanged();
+    	this.notes.add(
+    			new Note(msg, null, null));
+    	this.notesAdapter.notifyDataSetChanged();
     	
     	// Clear the EditText and the cached text.
-    	EditText entry = (EditText) this.findViewById(R.id.editTextQuickNote);
     	entry.clearFocus();
     	entry.setText("");
     }
@@ -145,17 +187,19 @@ extends Activity
     /*
      * Auxiliary
      */
-    private String getQuickEntry()
-    {
-    	EditText entry = (EditText) this.findViewById(R.id.editTextQuickNote);
-    	return entry.getText().toString();
-    }
-    
 	private void generateData(NotesFile notes)
 	{
 		notes.add(new Note("Hello!", null, null));
-		notes.add(new Note("World!", "This is a test", null));
+		notes.add(new Note("World!", "This is a test", new Date()));
 		notes.add(new Note("Foo!", "And another test.", null));
 		notes.add(new Note("Bar!", "And yet another test.", null));
+	}
+	
+	private void logList()
+	{
+		for (Note n : this.notes.getAll())
+		{
+			Log.d("logList", n.getTitle());
+		}
 	}
 }

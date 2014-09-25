@@ -44,10 +44,10 @@ implements Serializable
 	public NotesFile(ArrayList<Note> data, ArrayList<Note> archive)
 	{
 		if (data != null) {
-			this.data = new ArrayList<Note>(data);			
+			this.data = new ArrayList<Note>(data);
 		} else this.data = new ArrayList<Note>();
 		if (data != null) {
-			this.archive = new ArrayList<Note>(data);			
+			this.archive = new ArrayList<Note>(data);
 		} else this.archive = new ArrayList<Note>();
 	}
 	
@@ -95,5 +95,11 @@ implements Serializable
 	public int sizeTotal()
 	{
 		return this.data.size() + this.archive.size();
+	}
+
+	@SuppressWarnings("unchecked")
+	public ArrayList<Note> getAll() 
+	{
+		return (ArrayList<Note>) this.data.clone();
 	}
 }

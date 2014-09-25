@@ -38,16 +38,16 @@ import android.widget.TextView;
 public class NotesListAdapter 
 extends BaseAdapter
 {
-	private Context context;
 	private LayoutInflater mInflater = null;
 	private NotesFile data;
 	private final boolean archive;
 	
 	public NotesListAdapter(Context context, NotesFile data, boolean archive)
 	{
-		this.context = context;
 		this.data = data;
 		this.archive = archive;
+       	this.mInflater = (LayoutInflater) 
+       			context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 	}
 	
 	@Override
@@ -84,7 +84,6 @@ extends BaseAdapter
 		// Load the view data if it hasn't been already.
 		if (convertView == null)
 		{
-	       	mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 	        convertView = mInflater.inflate(R.layout.list_item_note, null);
 		}
 		

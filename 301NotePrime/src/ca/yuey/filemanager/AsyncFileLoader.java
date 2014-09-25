@@ -8,13 +8,13 @@ import android.os.AsyncTask;
 public class AsyncFileLoader
 extends AsyncTask<Void, Void, NotesFile>
 {
-	private Context context;
+	//private Context context;
 	private NotesFile data;
 	
 	public AsyncFileLoader(Context context, NotesFile newData)
 	{
 		this.data = newData;
-		this.context = context;
+		//this.context = context;
 	}
 
 	@Override

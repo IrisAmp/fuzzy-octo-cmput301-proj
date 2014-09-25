@@ -147,23 +147,31 @@ implements Serializable, Comparable<Note>
 		// -1 if this Note has a due date but not other (and vice versa).
 		// If neither has a due date, returns the result of the comparison of
 		// their creation dates.
+		int x = compareBooleans(this.done, other.done);
+		
+		if (x != 0)
+			return x;
+		
 		if(this.due != null && other.due != null)
-		{
 			return this.due.compareTo(other.due);
-		}
+		
 		if(this.due != null)
-		{
 			return -1;
-		}
+		
 		if(other.due != null)
-		{
 			return 1;
-		}
+		
 		return this.created.compareTo(other.created);
 	}
 	private int compareBooleans(boolean first, boolean second)
 	{
-		
+		if (first && second)
+			return 0;
+		if (first)
+			return -1;
+		if (second)
+			return 1;
+		return 0;
 	}
 	
 	@Override

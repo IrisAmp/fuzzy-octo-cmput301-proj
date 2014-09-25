@@ -16,7 +16,7 @@
         android:layout_alignParentTop="true" >
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/editTextQuickNote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -33,7 +33,7 @@
         </EditText>
 
         <ImageButton
-            android:id="@+id/button1"
+            android:id="@+id/buttonQuickAccept"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -51,7 +51,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/linearLayout1"
-        android:layout_centerHorizontal="true" >
+        android:layout_centerHorizontal="true"
+        android:animateLayoutChanges="true" >
 
     </ListView>
 

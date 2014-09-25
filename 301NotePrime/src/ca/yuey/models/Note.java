@@ -72,7 +72,7 @@ implements Serializable, Comparable<Note>
 		}
 		else
 		{
-			result.add(new String("No due date"));
+			result.add(null);
 		}
 		
 		return result;
@@ -142,25 +142,28 @@ implements Serializable, Comparable<Note>
 	@Override
 	public int compareTo(Note other)
 	{
-		// Natural ordering of Note objects. Returns the result of the
-		// compareTo method of the due dates if both notes have one. Returns
-		// -1 if this Note has a due date but not other (and vice versa).
-		// If neither has a due date, returns the result of the comparison of
-		// their creation dates.
-		int x = compareBooleans(this.done, other.done);
+		// Natural ordering of Note objects. Returns negative if this should
+		// be ordered before other, and vice versa.
 		
-		if (x != 0)
-			return x;
+		int x;
 		
+		// Compare completion
+		x = compareBooleans(this.done, other.done);
+		if (x != 0) return x;
+		
+		// Comepare due dates.
+		x = this.due.compareTo(other.due);
+		if (x != 0) return x;
+		/*
 		if(this.due != null && other.due != null)
 			return this.due.compareTo(other.due);
-		
 		if(this.due != null)
 			return -1;
-		
 		if(other.due != null)
 			return 1;
+		*/
 		
+		// Compare creation dates
 		return this.created.compareTo(other.created);
 	}
 	private int compareBooleans(boolean first, boolean second)

@@ -2,15 +2,128 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@color/default_bg"
+    android:padding="@dimen/activity_vertical_less_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".NewNoteActivity" >
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/linearLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/default_highlight"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/newNoteTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_less_margin"
+            android:layout_marginTop="@dimen/activity_vertical_less_margin"
+            android:text="@string/header_new_note_title" />
+
+        <EditText
+            android:id="@+id/newNoteTitleEntry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_less_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_less_margin"
+            android:ems="10"
+            android:hint="@string/new_note_title_hint" >
+
+            <requestFocus />
+        </EditText>
+
+        <TextView
+            android:id="@+id/newNoteDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_less_margin"
+            android:layout_marginTop="@dimen/activity_vertical_less_margin"
+            android:text="@string/header_new_note_details" />
+
+        <EditText
+            android:id="@+id/newNoteDetailEntry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_less_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_less_margin"
+            android:ems="10"
+            android:hint="@string/new_note_detail_hint"
+            android:inputType="textMultiLine" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_less_margin"
+            android:layout_marginTop="@dimen/activity_vertical_less_margin"
+            android:text="@string/header_new_note_due" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/newNoteDueDateEntry"
+                style="@android:style/Widget.DeviceDefault.Light.Spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_less_margin"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/new_note_date_hint" />
+
+            <TextView
+                android:id="@+id/newNoteDueTimeEntry"
+                style="@android:style/Widget.DeviceDefault.Light.Spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/activity_horizontal_less_margin"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/new_note_time_hint" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/activity_vertical_less_margin"
+            android:paddingBottom="@dimen/activity_vertical_less_margin" >
+
+            <Button
+                android:id="@+id/newNoteActionAccept"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:drawableBottom="@drawable/ic_action_accept"
+                android:text="@string/button_accept" />
+
+            <View
+                android:layout_width="1dip"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/activity_vertical_less_margin"
+                android:layout_marginTop="@dimen/activity_vertical_less_margin"
+                android:layout_weight="0"
+                android:background="?android:attr/dividerVertical" />
+
+            <Button
+                android:id="@+id/newNoteActionCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:drawableBottom="@drawable/ic_action_discard"
+                android:text="@string/button_cancel" />
+
+        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>

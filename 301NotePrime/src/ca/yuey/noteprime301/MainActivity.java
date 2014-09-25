@@ -23,12 +23,9 @@ package ca.yuey.noteprime301;
 
 import java.util.Date;
 
-import ca.yuey.adapters.NotesListAdapter;
-import ca.yuey.filemanager.FileManager;
-import ca.yuey.models.Note;
-import ca.yuey.models.NotesFile;
-import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -39,11 +36,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
+import ca.yuey.adapters.NotesListAdapter;
+import ca.yuey.models.Note;
+import ca.yuey.models.NotesFile;
 
 public class MainActivity
 extends Activity
 {
+	public static final String KEY_NOTES_BUNDLE = "notes";
+	public static final String KEY_NEW_NOTE_ENTRY = "newEntry";
+	
 	private NotesFile notes;
 	private NotesListAdapter notesAdapter;
 	
@@ -115,6 +117,10 @@ extends Activity
         //notes = FileManager.getNotes(this);
     }
     
+    /*
+     * (non-Javadoc)
+     * @see android.app.Activity#onResume()
+     */
     @Override
     protected void onResume()
     {
@@ -131,10 +137,35 @@ extends Activity
     @Override
     protected void onPause()
     {
-    	
     	super.onPause();
     }
     
+    /*
+     * (non-Javadoc)
+     * @see android.app.Activity#onSaveInstanceState(android.os.Bundle)
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState)
+    {
+    	// The activity is being destroyed. Save our data into the bundle.
+    	savedInstanceState.putSerializable(KEY_NOTES_BUNDLE, this.notes);
+    }
+    @Override
+    
+    /*
+     * (non-Javadoc)
+     * @see android.app.Activity#onRestoreInstanceState(android.os.Bundle)
+     */
+    protected void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+    	this.notes = (NotesFile) savedInstanceState.get(KEY_NOTES_BUNDLE);
+
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -143,13 +174,20 @@ extends Activity
         return true;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
     	switch (item.getItemId())
     	{
     	case (R.id.action_new):
-    		// TODO: Intent to NewNote
+    		Intent intent = new Intent(this, NewNoteActivity.class);
+    		intent.putExtra(
+    				KEY_NEW_NOTE_ENTRY, this.quickEntry.getText().toString());
+    		startActivity(intent);
     		return true;
     	case (R.id.action_archive):
     		// TODO: Intent to ArchiveView
@@ -167,11 +205,10 @@ extends Activity
      */
     private void onClickQuickNote()
     {
-    	EditText entry = (EditText) this.findViewById(R.id.editTextQuickNote);
-    	String msg = entry.getText().toString();
+    	//EditText entry = (EditText) this.findViewById(R.id.editTextQuickNote);
+    	String msg = this.quickEntry.getText().toString();
     	
-    	Log.d("onClickQuickNote", msg);
-    	
+    	// Don't do anything if there hasn't been any input.
     	if (msg.trim().isEmpty()) return;
     	
     	// Add the new entry as a note with only title.
@@ -180,8 +217,8 @@ extends Activity
     	this.notesAdapter.notifyDataSetChanged();
     	
     	// Clear the EditText and the cached text.
-    	entry.clearFocus();
-    	entry.setText("");
+    	this.quickEntry.clearFocus();
+    	this.quickEntry.setText("");
     }
     
     /*

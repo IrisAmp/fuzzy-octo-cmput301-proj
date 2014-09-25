@@ -3,7 +3,6 @@
     android:background="@color/default_bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/activity_vertical_less_margin"
     tools:context=".MainActivity" >
 
     <LinearLayout
@@ -28,7 +27,6 @@
             android:hint="@string/quick_note_hint"
             android:inputType="textCapSentences|textAutoCorrect"
             android:imeOptions="actionDone" >
-            <requestFocus />
             
         </EditText>
 
@@ -52,8 +50,12 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/linearLayout1"
         android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/activity_horizontal_less_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_less_margin"
+        android:animateLayoutChanges="true"
         android:background="@color/default_bg"
-        android:animateLayoutChanges="true" >
+        android:divider="@null"
+		android:dividerHeight="0dp" >
 
     </ListView>
 

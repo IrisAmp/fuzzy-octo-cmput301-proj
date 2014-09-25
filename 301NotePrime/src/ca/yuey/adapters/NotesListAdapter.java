@@ -29,6 +29,7 @@ import ca.yuey.noteprime301.R;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,6 +98,10 @@ extends BaseAdapter
 		title.setText(strings.get(0));
 		detail.setText(strings.get(1));
 		due.setText(strings.get(2));
+		
+		// If there is no detail or due date, hide those items from the view.
+		if (strings.get(1) == null) detail.setVisibility(View.GONE);
+		if (strings.get(2) == null) due.setVisibility(View.GONE);
 		
 		// Ship it back
 		return convertView;

@@ -230,10 +230,18 @@ extends Activity
 			{
 				switch (item.getItemId())
 				{
-				case (R.id.action_delete_selected):
+				case (R.id.action_archive_selected):
 					numSelected = 0;
 					MainActivity.this.notesAdapter.clearSelection();
 					mode.finish();
+				case (R.id.action_edit_selection):
+					
+				case (R.id.action_select_all):
+					
+				case (R.id.action_delete_selected):
+					
+				case (R.id.action_mail_selection):
+					
 				default:
 					return false;
 				}
@@ -274,6 +282,11 @@ extends Activity
 					MainActivity.this.notesAdapter.removeSelection(position);
 				}
 				
+				if (numSelected != 1)
+					mode.getMenu().getItem(1).setVisible(false);
+				else
+					mode.getMenu().getItem(1).setVisible(true);
+					
 				mode.setTitle(this.numSelected + " selected");
 			}
         });

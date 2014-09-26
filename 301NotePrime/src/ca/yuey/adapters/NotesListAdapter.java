@@ -22,7 +22,6 @@
 package ca.yuey.adapters;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -32,6 +31,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import ca.yuey.models.Note;
 import ca.yuey.models.NotesFile;
@@ -114,7 +116,7 @@ extends BaseAdapter
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		// Get the Note object associated with this position.
-		Note item = (Note) getItem(position);
+		final Note item = (Note) getItem(position);
 		
 		// Load the view data if it hasn't been already.
 		if (convertView == null)
@@ -126,6 +128,21 @@ extends BaseAdapter
 		TextView title = (TextView) convertView.findViewById(R.id.noteItemTitle);
 		TextView detail = (TextView) convertView.findViewById(R.id.noteItemDetail);
 		TextView due = (TextView) convertView.findViewById(R.id.noteItemDue);
+		CheckBox done = (CheckBox) convertView.findViewById(R.id.noteItemCheckBox);
+		
+		done.setOnCheckedChangeListener(new OnCheckedChangeListener()
+		{
+
+			@Override
+			public void onCheckedChanged(CompoundButton arg0, boolean arg1)
+			{
+				if (arg1)
+					item.finish();
+				else
+					item.unFinish();
+			}
+			
+		});
 
 		ArrayList<String> strings = item.getInfo();
 		

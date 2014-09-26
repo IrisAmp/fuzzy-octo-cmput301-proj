@@ -36,8 +36,6 @@ import android.util.Log;
 public class FileManager
 {
 	private static final String FILENAME = "fileManager.ser";
-	private static final int TIMEOUT_MAX = 3;
-	private static int retryTimeout = 0;
 	
 	private static FileOutputStream fos;
 	private static FileInputStream fis;
@@ -48,6 +46,7 @@ public class FileManager
 	
 	public static final NotesFile getNotes(Context context)
 	{
+		Log.d("ca.yuey.filemanager.FileManager.getNotes(Context)", "getNotes started");
 		NotesFile result = null;
 		
 		try
@@ -57,7 +56,7 @@ public class FileManager
 		catch (FileNotFoundException e)
 		{
 			// If the file does not exist just return a new NotesArchive
-			Log.d("getNotes", "FileNotFoundException occured in method FileManager.getNotes", e);
+			Log.e("ca.yuey.filemanager.FileManager.getNotes(Context)", "FileNotFoundException occured in method FileManager.getNotes");
 			return new NotesFile(null, null);
 		}
 		
@@ -67,6 +66,8 @@ public class FileManager
 			ois = new ObjectInputStream(fis);
 			result = (NotesFile) ois.readObject();
 			
+			Log.d("ca.yuey.filemanager.FileManager.getNotes(Context)", "getNotes read the ObjectInputStream");
+			
 			// Cleanup
 			ois.close(); fis.close();			
 		}
@@ -74,74 +75,44 @@ public class FileManager
 		{
 			// There was some sort of error in getting the object from file.
 			// Try the operation again a few times.
-			Log.d("getNotes", "IOException occured in method FileManager.getNotes", e);
-			return retryLoad(context);
+			Log.e("ca.yuey.filemanager.FileManager.getNotes(Context)", "IOException occured in method FileManager.getNotes");
 		}
 		catch (ClassNotFoundException e)
 		{
 			// Something really f**ked up seriously what 
-			Log.d("getNotes", "ClassNotFoundException occured in method FileManager.getNotes", e);
-			return retryLoad(context);
+			Log.e("ca.yuey.filemanager.FileManager.getNotes(Context)", "ClassNotFoundException occured in method FileManager.getNotes");
 		}
-		
-		retryTimeout = 0;
+
+		Log.d("ca.yuey.filemanager.FileManager.getNotes(Context)", "getNotes finished");
 		return result;
-	}
-	private static final NotesFile retryLoad(Context context)
-	{
-		if(retryTimeout < TIMEOUT_MAX)
-		{
-			retryTimeout ++;
-			return getNotes(context);
-		}
-		else
-		{
-			toastError("Couldn't load notes!");
-			return null;
-		}
 	}
 	
 	public static final void saveNotes(Context context, NotesFile archive)
 	{
+		Log.d("ca.yuey.filemanager.FileManager.saveNotes(Context, NotesFile)", "saveNotes started");
 		try
 		{
 			fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
 		}
 		catch (FileNotFoundException e)
 		{
-			Log.d("retryLoad", "FileNotFoundException occured in method FileManager.saveNotes", e);
-			retrySave(context, archive);
+			Log.e("ca.yuey.filemanager.FileManager.saveNotes(Context, NotesFile)", "FileNotFoundException occured in method FileManager.saveNotes");
 		}
 		
 		try
 		{
 			oos = new ObjectOutputStream(fos);
 			oos.writeObject(archive);
+
+			Log.d("ca.yuey.filemanager.FileManager.saveNotes(Context, NotesFile)", "saveNotes wrote the object");
 			
 			oos.close(); fos.close();
-			retryTimeout = 0;
 		}
 		catch(IOException e)
 		{
-			Log.d("retryLoad", "IOException occured in method FileManager.saveNotes", e);
-			retrySave(context, archive);
+			Log.e("ca.yuey.filemanager.FileManager.saveNotes(Context, NotesFile)", "IOException occured in method FileManager.saveNotes");
 		}
-	}
-	private static final void retrySave(Context context, NotesFile archive)
-	{
-		if(retryTimeout < TIMEOUT_MAX)
-		{
-			retryTimeout ++;
-			saveNotes(context, archive);
-		}
-		else
-		{
-			toastError("Couldn't save notes!");
-		}
-	}
-	
-	private static final void toastError(String msg)
-	{
-		
+
+		Log.d("ca.yuey.filemanager.FileManager.saveNotes(Context, NotesFile)", "saveNotes finished");
 	}
 }

@@ -40,6 +40,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import ca.yuey.adapters.NotesListAdapter;
+import ca.yuey.filemanager.FileManager;
 import ca.yuey.models.Note;
 import ca.yuey.models.NotesFile;
 
@@ -49,6 +50,7 @@ extends Activity
 	public static final String KEY_NOTES_BUNDLE = "notes";
 	public static final String KEY_NEW_NOTE_TITLE_ENTRY = "ca.yuey.noteprime301.ENTRY_TITLE";
 	public static final String KEY_NEW_NOTE_DETAIL_ENTRY = "ca.yuey.noteprime301.ENTRY_DETAIL";
+	public static final String KEY_NOTE_FILE_SER = "ca.yuey.noteprime301.NOTES_SER";
 	
 	private NotesFile notes;
 	private NotesListAdapter notesAdapter;
@@ -66,12 +68,19 @@ extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        // Get persistent data
-        this.notes = new NotesFile(null, null);
+        this.notes = FileManager.getNotes(this);
         
         this.getActivityResources();
         
         this.attachListeners();
+    }
+    
+    @Override
+    protected void onRestart()
+    {
+    	super.onRestart();
+    	this.notes = FileManager.getNotes(this);
+    	this.notesAdapter.notifyDataSetChanged();
     }
     
     @Override
@@ -84,6 +93,7 @@ extends Activity
     protected void onPause()
     {
     	super.onPause();
+    	FileManager.saveNotes(this, notes);
     }
     
 	/*========================================================================
@@ -100,7 +110,6 @@ extends Activity
     protected void onRestoreInstanceState(Bundle savedInstanceState)
     {
     	this.notes = (NotesFile) savedInstanceState.get(KEY_NOTES_BUNDLE);
-
     }
     
     @Override
@@ -114,24 +123,28 @@ extends Activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+    	Intent intent;
     	switch (item.getItemId())
     	{
     	case (R.id.action_new):
-    		Intent intent = new Intent(this, ComposeNoteActivity.class);
+    		intent = new Intent(this, ComposeNoteActivity.class);
     		String msg = this.quickEntry.getText().toString();
     		if (msg != null)
     			intent.putExtra(KEY_NEW_NOTE_TITLE_ENTRY, msg);
     		this.startActivityForResult(intent, 0);
     		return true;
+    		
     	case (R.id.action_archive):
-    		// TODO: Intent to ArchiveView
+    		intent = new Intent(this, ArchiveViewActivity.class);
+    		intent.putExtra(KEY_NOTE_FILE_SER, this.notes);
+    		this.startActivity(intent);
     		return true;
+    		
     	case (R.id.action_info):
-    		// TODO
+    		intent = new Intent(this, InfoActivity.class);
+    		this.startActivity(intent);
     		return true;
-    	case (R.id.action_settings):
-    		// TODO: Intent to Settings
-    		return true;
+    		
     	default:
     		return super.onOptionsItemSelected(item);
     	}

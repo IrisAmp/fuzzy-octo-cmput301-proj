@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="ca.yuey.noteprime301.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/activity_name_home" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,9 +23,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="ca.yuey.noteprime301.ComposeNoteActivity"
+            android:name=".ComposeNoteActivity"
             android:label="@string/activity_name_new"
-            android:parentActivityName="ca.yuey.noteprime301.MainActivity" >
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.yuey.noteprime301.MainActivity" />
+        </activity>
+        <activity
+            android:name=".InfoActivity"
+            android:label="@string/activity_name_info"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.yuey.noteprime301.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ArchiveViewActivity"
+            android:label="@string/activity_name_archive"
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ca.yuey.noteprime301.MainActivity" />

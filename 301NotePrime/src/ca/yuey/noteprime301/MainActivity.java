@@ -230,7 +230,7 @@ extends Activity
 			{
 				switch (item.getItemId())
 				{
-				case R.id.action_delete:
+				case (R.id.action_delete_selected):
 					numSelected = 0;
 					MainActivity.this.notesAdapter.clearSelection();
 					mode.finish();

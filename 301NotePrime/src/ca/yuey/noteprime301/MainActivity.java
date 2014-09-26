@@ -137,7 +137,7 @@ extends Activity
     	case (R.id.action_archive):
     		intent = new Intent(this, ArchiveViewActivity.class);
     		intent.putExtra(KEY_NOTE_FILE_SER, this.notes);
-    		this.startActivity(intent);
+    		this.startActivityForResult(intent, 1);
     		return true;
     		
     	case (R.id.action_info):

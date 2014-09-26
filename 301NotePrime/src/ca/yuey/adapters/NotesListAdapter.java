@@ -72,7 +72,10 @@ extends BaseAdapter
 	@Override
 	public Object getItem(int position)
 	{
-		return data.get(position);
+		if (archive)
+			return data.getFromArchive(position);
+		else
+			return data.get(position);
 	}
 
 	@Override
@@ -83,7 +86,10 @@ extends BaseAdapter
 
 	public void add(Note item)
 	{
-		this.data.add(item);
+		if (archive)
+			this.data.addToArchive(item);
+		else
+			this.data.add(item);
 		this.notifyDataSetChanged();
 	}
 	
@@ -124,15 +130,27 @@ extends BaseAdapter
 		ArrayList<Integer> indicies = new ArrayList<Integer>(this.selection.keySet());
 		Collections.sort(indicies, Collections.reverseOrder());
 		for (int i : indicies)
-			this.data.remove(i);
+			this.data.archive(i);
+
+		this.clearSelection();
 		this.notifyDataSetChanged();
+	}
+	
+	public void delSelection()
+	{
+		ArrayList<Integer> indicies = new ArrayList<Integer>(this.selection.keySet());
+		Collections.sort(indicies, Collections.reverseOrder());
+		if (archive)
+			for (int i : indicies) this.data.removeFromArchive(i);
+		else
+			for (int i : indicies) this.data.remove(i);
 	}
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		// Get the Note object associated with this position.
-		final Note item = (Note) getItem(position);
+		final Note item = (Note) this.getItem(position);
 		
 		// Load the view data if it hasn't been already.
 		if (convertView == null)

@@ -117,4 +117,9 @@ implements Serializable
 	{
 		this.data.remove(i);
 	}
+
+	public void removeFromArchive(int i)
+	{
+		this.archive.remove(i);
+	}
 }

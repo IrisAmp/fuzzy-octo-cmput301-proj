@@ -27,6 +27,7 @@
     <string name="action_edit">Edit</string>
     <string name="action_select_all">Select All</string>
     <string name="action_mail">email Notes</string>
+    <string name="action_upload">Unarchive</string>
     <string name="list_item_title">Title</string>
     <string name="list_item_detail">Details&#8230;</string>
     <string name="list_item_due">Due: MMMM DD, hh:mm a</string>

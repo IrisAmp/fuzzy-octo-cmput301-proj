@@ -26,6 +26,7 @@
     <string name="action_send_all">Send everything</string>
     <string name="action_info">Information</string>
     <string name="action_settings">Settings</string>
+    <string name="action_delete">Delete</string>
     
     <string name="list_item_title">Title</string>
     <string name="list_item_detail">Details&#8230;</string>

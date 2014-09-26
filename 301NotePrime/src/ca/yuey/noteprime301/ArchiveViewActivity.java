@@ -1,27 +1,23 @@
 package ca.yuey.noteprime301;
 
-import ca.yuey.adapters.NotesListAdapter;
-import ca.yuey.models.NotesFile;
-import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ListView;
+import ca.yuey.adapters.NotesListAdapter;
+import ca.yuey.filemanager.FileManager;
 
 public class ArchiveViewActivity
-extends Activity
+extends BaseActivity
 {
-	private Intent intent;
-	
-	private NotesFile notes;
 	private NotesListAdapter notesAdapter;
 	
 	private ListView archiveListView;
@@ -33,10 +29,21 @@ extends Activity
 		setContentView(R.layout.activity_archive_view);
 		
         this.getActivityResources();
-
-		this.unpackIntent();
         
         this.attachListeners();
+	}
+	
+	@Override
+	protected void onRestart()
+	{
+		super.onRestart();
+	}
+	
+	@Override
+	protected void onPause()
+	{
+		FileManager.saveNotes(this, notes);
+		super.onPause();
 	}
 
 	@Override
@@ -49,27 +56,21 @@ extends Activity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		return super.onOptionsItemSelected(item);
+		switch (item.getItemId())
+		{
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+		
 	}
 	
 	private void getActivityResources()
 	{
 		this.archiveListView = (ListView) this.findViewById(R.id.archiveViewListView);
 	}
-	private void unpackIntent()
-	{
-		this.intent = this.getIntent();
-		this.notes = (NotesFile) this.intent.getExtras().getSerializable(MainActivity.KEY_NOTE_FILE_SER);
-		if (this.notes == null)
-		{
-			this.notes = new NotesFile(null, null);
-			Log.e("ca.yuey.noteprime301.ArchiveViewActivity.unpackIntent()", "Failed to extract notes data from intent.");
-		}
-		Log.d("ca.yuey.noteprime301.ArchiveViewActivity.unpackIntent()", "Got a notesfile with " + this.notes.size() + " active and " + this.notes.sizeArchive() + " archived items.");
-	}
 	private void attachListeners()
 	{
-		this.notesAdapter = new NotesListAdapter(this, this.notes, true);
+		this.notesAdapter = new NotesListAdapter(this, true);
 		this.archiveListView.setAdapter(this.notesAdapter);
 		
         this.archiveListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
@@ -80,21 +81,36 @@ extends Activity
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item)
 			{
+				Intent intent;
 				ArchiveViewActivity host = ArchiveViewActivity.this;
 				switch (item.getItemId())
 				{
 				case (R.id.action_unarchive_selected):
 					numSelected = 0;
-					host.notesAdapter.archiveSelection();
+					host.notesAdapter.unarchiveSelection();
 					host.notesAdapter.clearSelection();
 					mode.finish();
-				case (R.id.action_edit_selection):
+					return true;
 					
 				case (R.id.action_select_all):
+					host.notesAdapter.selectAll();
+					numSelected = host.notesAdapter.size();
+					mode.setTitle(this.numSelected + " selected");
+					return true;
 					
 				case (R.id.action_delete_selected):
+					numSelected = 0;
+					host.notesAdapter.delSelection();
+					host.notesAdapter.clearSelection();
+					mode.finish();
+					return true;
 					
 				case (R.id.action_mail_selection):
+					intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto","abc@domain.com", null));
+					intent.putExtra(Intent.EXTRA_TEXT, host.notesAdapter.digestSelectionToString());
+					startActivity(Intent.createChooser(intent, "Send email..."));
+					mode.finish();
+					return true;
 					
 				default:
 					return false;
@@ -150,7 +166,7 @@ extends Activity
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long arg3)
 			{
 				ArchiveViewActivity.this.archiveListView.setItemChecked(position, !ArchiveViewActivity.this.notesAdapter.isChecked(position));
-				return false;
+				return true;
 			}
         	
         });

@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import android.util.Log;
+
 public class Note
 implements Serializable, Comparable<Note>
 {
@@ -75,6 +77,11 @@ implements Serializable, Comparable<Note>
 			result.add(null);
 		}
 		
+		if (this.done)
+			result.add("(Done)");
+		else
+			result.add(null);
+		
 		return result;
 	}
 	public String getTitle()
@@ -95,7 +102,9 @@ implements Serializable, Comparable<Note>
 	}
 	public Date getDue()
 	{
-		return (Date) this.modified.clone();
+		if (this.due != null)
+			return (Date) this.due.clone();
+		else return null;
 	}
 	public boolean isFinished()
 	{
@@ -105,7 +114,7 @@ implements Serializable, Comparable<Note>
 	/*/=======================================================================
 		Modifiers
 	 */
-	public Note modify(String title, String detail, Date due)
+	public void modify(String title, String detail, Date due)
 	{
 		if(title != null)
 		{
@@ -121,7 +130,6 @@ implements Serializable, Comparable<Note>
 		}
 		
 		this.modified = new Date();
-		return this;
 	}
 	public void notifyModified()
 	{
@@ -130,10 +138,12 @@ implements Serializable, Comparable<Note>
 	public void finish()
 	{
 		this.done = true;
+		Log.d("FINISHED", "FINISHED");
 	}
 	public void unFinish()
 	{
 		this.done = false;
+		Log.d("UNFINISHED", "UNFINISHED");
 	}
 	
 	/*/=======================================================================
@@ -156,9 +166,9 @@ implements Serializable, Comparable<Note>
 		if(this.due != null && other.due != null)
 			return this.due.compareTo(other.due);
 		if(this.due != null)
-			return 1;
-		if(other.due != null)
 			return -1;
+		if(other.due != null)
+			return 1;
 		
 		// Compare creation dates
 		return this.created.compareTo(other.created);

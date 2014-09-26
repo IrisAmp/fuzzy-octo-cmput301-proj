@@ -17,33 +17,30 @@ package ca.yuey.noteprime301;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import android.app.Activity;
+import android.app.FragmentManager;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 import ca.yuey.models.Note;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
-
-import android.os.Bundle;
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class ComposeNoteActivity
 extends Activity
@@ -52,7 +49,6 @@ implements OnDateSetListener, TimePickerDialog.OnTimeSetListener
 	public static final String KEY_COMPLETED_NOTE_ITEM = "ca.yuey.noteprime301.COMPLETED_NOTE"; 
 	
 	private Intent intent;
-	private InputMethodManager imm;
 	
 	private DatePickerDialog datePickerDialog;
 	private TimePickerDialog timePickerDialog;
@@ -145,9 +141,6 @@ implements OnDateSetListener, TimePickerDialog.OnTimeSetListener
 		// Get the intent data
 		this.intent = getIntent();
 		
-		// Get the IMM so we can control focus
-		this.imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-		
 		// Get the views we need.
 		this.datePickerTV = (TextView) this.findViewById(R.id.newNoteDueDateEntry);
 		this.timePickerTV = (TextView) this.findViewById(R.id.newNoteDueTimeEntry);
@@ -170,13 +163,27 @@ implements OnDateSetListener, TimePickerDialog.OnTimeSetListener
         // If we have data from our intent, insert it into the entry fields.
 		Bundle extras = this.intent.getExtras();
 		
-        String title = (String) extras.get(MainActivity.KEY_NEW_NOTE_TITLE_ENTRY);
-        String detail = (String) extras.get(MainActivity.KEY_NEW_NOTE_DETAIL_ENTRY);
+        Note data = (Note) extras.get(BaseActivity.KEY_NOTE_SERIALIZABLE);
         
+        ArrayList<String> strs = data.getInfo();
+        String title = strs.get(0);
+        String detail = strs.get(1);
+                
         if (title != null)
         	this.titleEntry.setText(title);
         if (detail != null)
         	this.detailEntry.setText(detail);
+
+        if (data.getDue() != null)
+        {
+        	this.calendar.setTime(data.getDue());
+        	
+    		DateFormat sf = new SimpleDateFormat("h:mm a", Locale.CANADA);
+    		this.timePickerTV.setText(sf.format(calendar.getTime()));
+
+    		sf = new SimpleDateFormat("MMM dd, yyyy", Locale.CANADA);
+    		this.datePickerTV.setText(sf.format(calendar.getTime()));
+        }
 	}
 	private void attachListeners()
 	{

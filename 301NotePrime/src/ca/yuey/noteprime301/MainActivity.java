@@ -23,6 +23,7 @@ package ca.yuey.noteprime301;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ActionMode;
@@ -45,14 +46,10 @@ import ca.yuey.models.Note;
 import ca.yuey.models.NotesFile;
 
 public class MainActivity
-extends Activity
+extends BaseActivity
 {
 	public static final String KEY_NOTES_BUNDLE = "notes";
-	public static final String KEY_NEW_NOTE_TITLE_ENTRY = "ca.yuey.noteprime301.ENTRY_TITLE";
-	public static final String KEY_NEW_NOTE_DETAIL_ENTRY = "ca.yuey.noteprime301.ENTRY_DETAIL";
-	public static final String KEY_NOTE_FILE_SER = "ca.yuey.noteprime301.NOTES_SER";
 	
-	private NotesFile notes;
 	private NotesListAdapter notesAdapter;
 	
 	private ImageButton quickAcceptButton;
@@ -68,7 +65,7 @@ extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        this.notes = FileManager.getNotes(this);
+        BaseActivity.notes = FileManager.getNotes(this);
         
         this.getActivityResources();
         
@@ -79,13 +76,12 @@ extends Activity
     protected void onRestart()
     {
     	super.onRestart();
-    	this.notes = FileManager.getNotes(this);
-    	this.notesAdapter.notifyDataSetChanged();
     }
     
     @Override
     protected void onResume()
     {
+    	this.getActionBar().setTitle("Home");
     	super.onResume();
     }
 
@@ -103,13 +99,13 @@ extends Activity
     protected void onSaveInstanceState(Bundle savedInstanceState)
     {
     	// The activity is being destroyed. Save our data into the bundle.
-    	savedInstanceState.putSerializable(KEY_NOTES_BUNDLE, this.notes);
+    	savedInstanceState.putSerializable(KEY_NOTES_BUNDLE, BaseActivity.notes);
     }
     @Override
     
     protected void onRestoreInstanceState(Bundle savedInstanceState)
     {
-    	this.notes = (NotesFile) savedInstanceState.get(KEY_NOTES_BUNDLE);
+    	BaseActivity.notes = (NotesFile) savedInstanceState.get(KEY_NOTES_BUNDLE);
     }
     
     @Override
@@ -130,14 +126,20 @@ extends Activity
     		intent = new Intent(this, ComposeNoteActivity.class);
     		String msg = this.quickEntry.getText().toString();
     		if (msg != null)
-    			intent.putExtra(KEY_NEW_NOTE_TITLE_ENTRY, msg);
+    			intent.putExtra(
+    					BaseActivity.KEY_NOTE_SERIALIZABLE, new Note(msg, null, null));
     		this.startActivityForResult(intent, 0);
     		return true;
     		
     	case (R.id.action_archive):
     		intent = new Intent(this, ArchiveViewActivity.class);
-    		intent.putExtra(KEY_NOTE_FILE_SER, this.notes);
-    		this.startActivityForResult(intent, 1);
+    		this.startActivity(intent);
+    		return true;
+    		
+    	case (R.id.action_mail_all):
+			intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto","abc@domain.com", null));
+			intent.putExtra(Intent.EXTRA_TEXT, this.notesAdapter.digestEverythingToString());
+			startActivity(Intent.createChooser(intent, "Send email..."));
     		return true;
     		
     	case (R.id.action_info):
@@ -156,13 +158,14 @@ extends Activity
     	super.onActivityResult(requestCode, resultCode, data);
     	switch (requestCode)
     	{
-    	case(0): // Navigated to via Home's ActionBar
+    	case(0): // Navigated back via ComposeNoteActivity
     		if (resultCode == Activity.RESULT_OK)
     		{
     			Note incomingNote = (Note) data.getExtras().get(ComposeNoteActivity.KEY_COMPLETED_NOTE_ITEM);
     			if (incomingNote != null)
     				this.notesAdapter.add(incomingNote);
     			else Log.e("ca.yuey.noteprime301.MainActivity.onActivityResult(int, int, Intent)", "ComposeNoteActivity returned success, but the data returned was null.");
+    			FileManager.saveNotes(this, BaseActivity.notes);
     		}
     		break;
     	}
@@ -201,7 +204,7 @@ extends Activity
 	private void attachListeners()
 	{
         // Attach the View adapter to our notes object.
-        this.notesAdapter = new NotesListAdapter(this, this.notes, false);
+        this.notesAdapter = new NotesListAdapter(this, false);
         this.noteList.setAdapter(this.notesAdapter);
     	
         // Attach an onClick listener to the accept button.
@@ -240,6 +243,7 @@ extends Activity
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item)
 			{
 				MainActivity host = MainActivity.this;
+				Intent intent;
 				switch (item.getItemId())
 				{
 				case (R.id.action_archive_selected):
@@ -247,14 +251,41 @@ extends Activity
 					host.notesAdapter.archiveSelection();
 					host.notesAdapter.clearSelection();
 					mode.finish();
+					return true;
+					
 				case (R.id.action_edit_selection):
+					if (numSelected != 1 )
+						// How did you get here???
+						mode.finish();
+					numSelected = 0;
+					intent = new Intent(MainActivity.this, ComposeNoteActivity.class);
+					intent.putExtra(
+							BaseActivity.KEY_NOTE_SERIALIZABLE,
+							host.notesAdapter.getSelectedItems().get(0));
+					host.notesAdapter.clearSelection();
+					startActivityForResult(intent, 1);
+					mode.finish();
+					return true;
 					
 				case (R.id.action_select_all):
+					host.notesAdapter.selectAll();
+					numSelected = host.notesAdapter.size();
+					mode.setTitle(this.numSelected + " selected");
+					return true;
 					
 				case (R.id.action_delete_selected):
+					numSelected = 0;
+					host.notesAdapter.delSelection();
+					host.notesAdapter.clearSelection();
+					mode.finish();
+					return true;
 					
 				case (R.id.action_mail_selection):
-					
+					intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto","abc@domain.com", null));
+					intent.putExtra(Intent.EXTRA_TEXT, host.notesAdapter.digestSelectionToString());
+					startActivity(Intent.createChooser(intent, "Send email..."));
+					mode.finish();
+					return true;
 				default:
 					return false;
 				}

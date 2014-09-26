@@ -32,13 +32,12 @@ package ca.yuey.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class NotesFile
 implements Serializable
 {
-	private static final long serialVersionUID = 7092467508669329490L;
-
+	private static final long serialVersionUID = -7913436074635612392L;
+	
 	private ArrayList<Note> data;
 	private ArrayList<Note> archive;
 	
@@ -47,6 +46,7 @@ implements Serializable
 		if (data != null) {
 			this.data = new ArrayList<Note>(data);
 		} else this.data = new ArrayList<Note>();
+		
 		if (data != null) {
 			this.archive = new ArrayList<Note>(data);
 		} else this.archive = new ArrayList<Note>();
@@ -82,14 +82,14 @@ implements Serializable
 	
 	public void archive(int position)
 	{
-		this.archive.add(
-				this.data.remove(position));
+		this.archive.add(this.data.get(position));
+		this.data.remove(position);
 	}
 	
 	public void unarchive(int position)
 	{
-		this.data.add(
-				this.data.remove(position));
+		this.data.add(this.archive.get(position));
+		this.archive.remove(position);
 	}
 	
 	public int size()
@@ -107,19 +107,40 @@ implements Serializable
 		return this.data.size() + this.archive.size();
 	}
 
-	@SuppressWarnings("unchecked")
-	public ArrayList<Note> getAll() 
-	{
-		return (ArrayList<Note>) this.data.clone();
-	}
-
 	public void remove(int i)
 	{
 		this.data.remove(i);
 	}
-
 	public void removeFromArchive(int i)
 	{
 		this.archive.remove(i);
+	}
+
+	public void sort()
+	{
+		// HERE BE DRAGONS (bugs).
+		//Collections.sort(this.data);
+		//Collections.sort(this.archive);
+		
+		// For some reason this function clears each element's due date
+		// WTF???
+	}
+
+	public int getNumFinished()
+	{
+		int result = 0;
+		for (Note n : this.data)
+			if (n.isFinished())
+				result += 1;
+		return result;
+	}
+
+	public int getNumArchivedFinished()
+	{
+		int result = 0;
+		for (Note n : this.archive)
+			if (n.isFinished())
+				result += 1;
+		return result;
 	}
 }

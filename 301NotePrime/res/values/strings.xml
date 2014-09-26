@@ -4,7 +4,7 @@
     <string name="app_name">byue301NotePrime</string>
     <string name="hello_world">Hello world!</string>
     <string name="activity_name_home">Home</string>
-    <string name="activity_name_new">New Note</string>
+    <string name="activity_name_new">Compose Note</string>
     <string name="activity_name_info">Information</string>
     <string name="activity_name_archive">Archive</string>
     <string name="quick_note_hint">Write a quick note&#8230;</string>
@@ -18,23 +18,29 @@
     <string name="accessibility_accept_button">Accept</string>
     <string name="accessibility_overflow_button">More</string>
     <string name="accessability_clear_button">Clear</string>
+    
     <string name="action_new">New note</string>
     <string name="action_archive">Archive</string>
-    <string name="action_send_all">Send everything</string>
     <string name="action_info">Information</string>
     <string name="action_settings">Settings</string>
     <string name="action_delete">Delete</string>
     <string name="action_edit">Edit</string>
     <string name="action_select_all">Select All</string>
-    <string name="action_mail">email Notes</string>
+    <string name="action_mail">email Selected</string>
+    <string name="action_mail_all">Mail all</string>
     <string name="action_upload">Unarchive</string>
+    
     <string name="list_item_title">Title</string>
     <string name="list_item_detail">Details&#8230;</string>
     <string name="list_item_due">Due: MMMM DD, hh:mm a</string>
     <string name="button_accept">Done</string>
+    <string name="butto_nuke_accept">Delete everything</string>
     <string name="button_cancel">Cancel</string>
+    <string name="button_nuke">Clear Database</string>
     <string name="info_heading1">byue301NotePrime</string>
     <string name="info_body1">This is my result for the first project in CMPUT 301. I hope you like it!</string>
+    <string name="info_heading2">Statistics</string>
+    <string name="info_body2">Something went wrong!</string>
     <string name="license_heading">Licence</string>
     <string name="licence_body">\tCopyright 2014 Brandon Yue\n
 \n

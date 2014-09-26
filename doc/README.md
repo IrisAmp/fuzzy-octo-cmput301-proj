@@ -1,7 +1,7 @@
 fuzzy-octo-cmput301-proj
 ========================
-
-This is the Fall 2014 CMPUT 301 Project 1.
+##Author
+Brandon Yue - byue (1297029)
 
 #Licences
 ##fuzzy-octo-cmput301-proj

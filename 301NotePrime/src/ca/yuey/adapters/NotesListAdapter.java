@@ -22,19 +22,18 @@
 package ca.yuey.adapters;
 
 import java.util.ArrayList;
-
-import ca.yuey.models.Note;
-import ca.yuey.models.NotesFile;
-import ca.yuey.noteprime301.R;
+import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import ca.yuey.models.Note;
+import ca.yuey.models.NotesFile;
+import ca.yuey.noteprime301.R;
 
 public class NotesListAdapter 
 extends BaseAdapter
@@ -96,14 +95,29 @@ extends BaseAdapter
 		ArrayList<String> strings = item.getInfo();
 		
 		title.setText(strings.get(0));
-		detail.setText(strings.get(1));
-		due.setText(strings.get(2));
 		
-		// If there is no detail or due date, hide those items from the view.
 		if (strings.get(1) == null) detail.setVisibility(View.GONE);
+			else detail.setText(strings.get(1));
+		
 		if (strings.get(2) == null) due.setVisibility(View.GONE);
+			else due.setText("Due: " + strings.get(2));
+		
+		Date dueDate = item.getDue();
+		if (dueDate != null)
+		{
+			long diff = diffTime(dueDate);
+			if (diff < 0)
+				due.setTextColor(0xFFFF4444);
+			else if (diff < (60 * 60 * 60))
+				due.setTextColor(0xFFFFBB33);
+		}
 		
 		// Ship it back
 		return convertView;
+	}
+	
+	private long diffTime(Date d)
+	{
+		return d.getTime() - (new Date().getTime());
 	}
 }

@@ -4,30 +4,34 @@
     <string name="app_name">byue301NotePrime</string>
     <string name="hello_world">Hello world!</string>
     
+    <string name="activity_name_home">Home</string>
+    <string name="activity_name_new">New Note</string>
+    
     <string name="quick_note_hint">Write a quick note&#8230;</string>
     <string name="new_note_title_hint">Title</string>
     <string name="new_note_detail_hint">Some more details&#8230;</string>
     <string name="new_note_date_hint">Due date</string>
     <string name="new_note_time_hint">Due time</string>
     
-    <string name="header_new_note_title">Title</string>
-    <string name="header_new_note_details">Details</string>
-    <string name="header_new_note_due">Due date</string>
+    <string name="header_new_note_title">TITLE</string>
+    <string name="header_new_note_details">DETAILS</string>
+    <string name="header_new_note_due">DUE DATE</string>
     
     <string name="accessibility_accept_button">Accept</string>
     <string name="accessibility_overflow_button">More</string>
+    <string name="accessability_clear_button">Clear</string>
     
     <string name="action_new">New note</string>
     <string name="action_archive">Archive</string>
+    <string name="action_send_all">Send everything</string>
+    <string name="action_info">Information</string>
     <string name="action_settings">Settings</string>
     
     <string name="list_item_title">Title</string>
     <string name="list_item_detail">Details&#8230;</string>
     <string name="list_item_due">Due: MMMM DD, hh:mm a</string>
     
-    <string name="button_accept">Done</string>
-    <string name="button_cancel">Cancel</string>
-    
-    <string name="title_activity_new_note">NewNoteActivity</string>
+    <string name="button_accept">DONE</string>
+    <string name="button_cancel">CANCEL</string>
 
 </resources>

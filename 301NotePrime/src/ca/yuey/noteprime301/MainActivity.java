@@ -21,17 +21,18 @@
 */
 package ca.yuey.noteprime301;
 
-import java.util.Date;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -44,7 +45,8 @@ public class MainActivity
 extends Activity
 {
 	public static final String KEY_NOTES_BUNDLE = "notes";
-	public static final String KEY_NEW_NOTE_ENTRY = "newEntry";
+	public static final String KEY_NEW_NOTE_TITLE_ENTRY = "ca.yuey.noteprime301.ENTRY_TITLE";
+	public static final String KEY_NEW_NOTE_DETAIL_ENTRY = "ca.yuey.noteprime301.ENTRY_DETAIL";
 	
 	private NotesFile notes;
 	private NotesListAdapter notesAdapter;
@@ -53,30 +55,138 @@ extends Activity
 	private ListView noteList;
 	private EditText quickEntry;
 	
-	/*
-	 * (non-Javadoc)
-	 * @see android.app.Activity#onCreate(android.os.Bundle)
-	 * Since this is the only launcher activity, this is called when the app
-	 * is first started. Persistent user data is loaded here and UI elements
-	 * are set up.
+	/*========================================================================
+	 * Android Lifecycle
 	 */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        // Super
         super.onCreate(savedInstanceState);
-                
-    	// Housekeeping
         setContentView(R.layout.activity_main);
         
         // Get persistent data
         this.notes = new NotesFile(null, null);
         
+        this.getActivityResources();
+        
+        this.attachListeners();
+    }
+    
+    @Override
+    protected void onResume()
+    {
+    	super.onResume();
+    }
+
+    @Override
+    protected void onPause()
+    {
+    	super.onPause();
+    }
+    
+	/*========================================================================
+	 * onX Callbacks
+	 */
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState)
+    {
+    	// The activity is being destroyed. Save our data into the bundle.
+    	savedInstanceState.putSerializable(KEY_NOTES_BUNDLE, this.notes);
+    }
+    @Override
+    
+    protected void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+    	this.notes = (NotesFile) savedInstanceState.get(KEY_NOTES_BUNDLE);
+
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+    	switch (item.getItemId())
+    	{
+    	case (R.id.action_new):
+    		Intent intent = new Intent(this, ComposeNoteActivity.class);
+    		String msg = this.quickEntry.getText().toString();
+    		if (msg != null)
+    			intent.putExtra(KEY_NEW_NOTE_TITLE_ENTRY, msg);
+    		this.startActivityForResult(intent, 0);
+    		return true;
+    	case (R.id.action_archive):
+    		// TODO: Intent to ArchiveView
+    		return true;
+    	case (R.id.action_info):
+    		// TODO
+    		return true;
+    	case (R.id.action_settings):
+    		// TODO: Intent to Settings
+    		return true;
+    	default:
+    		return super.onOptionsItemSelected(item);
+    	}
+    }
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+    	super.onActivityResult(requestCode, resultCode, data);
+    	switch (requestCode)
+    	{
+    	case(0): // Navigated to via Home's ActionBar
+    		if (resultCode == Activity.RESULT_OK)
+    		{
+    			Note incomingNote = (Note) data.getExtras().get(ComposeNoteActivity.KEY_COMPLETED_NOTE_ITEM);
+    			if (incomingNote != null)
+    				this.notes.add(incomingNote);
+    			else Log.e("ca.yuey.noteprime301.MainActivity.onActivityResult(int, int, Intent)", "ComposeNoteActivity returned success, but the data returned was null.");
+    			this.notesAdapter.notifyDataSetChanged();
+    		}
+    		break;
+    	}
+    }
+    
+	/*========================================================================
+     * Layout Callbacks
+     */
+    private void onClickQuickNote()
+    {
+    	//EditText entry = (EditText) this.findViewById(R.id.editTextQuickNote);
+    	String msg = this.quickEntry.getText().toString();
+    	
+    	// Don't do anything if there hasn't been any input.
+    	if (msg.trim().isEmpty()) return;
+    	
+    	// Add the new entry as a note with only title.
+    	this.notes.add(
+    			new Note(msg, null, null));
+    	this.notesAdapter.notifyDataSetChanged();
+    	
+    	// Clear the EditText and the cached text.
+    	this.quickEntry.clearFocus();
+    	this.quickEntry.setText("");
+    }
+    
+	/*========================================================================
+     * Auxiliary
+     */
+	private void getActivityResources()
+	{
         // Grab the views we need.
     	this.quickAcceptButton = (ImageButton) this.findViewById(R.id.buttonQuickAccept);
-        this.noteList = (ListView) this.findViewById(R.id.listView1);
+        this.noteList = (ListView) this.findViewById(R.id.notesListView);
         this.quickEntry = (EditText) this.findViewById(R.id.editTextQuickNote);
-        
+	}
+	private void attachListeners()
+	{
         // Attach the View adapter to our notes object.
         this.notesAdapter = new NotesListAdapter(this, this.notes, false);
         this.noteList.setAdapter(this.notesAdapter);
@@ -107,136 +217,49 @@ extends Activity
 			}
         	
         });
+        // Attach a multi choice listener to the ListView
+        this.noteList.setMultiChoiceModeListener(new MultiChoiceModeListener()
+        {
+			@Override
+			public boolean onActionItemClicked(ActionMode mode, MenuItem item)
+			{
+				switch (item.getItemId())
+				{
+				default:
+					return false;
+				}
+			}
 
-        //this.generateData(notes);
-        
-        // Start FIO. The AsyncLoader will notify the UI thread to update the
-        // ListView when it finishes FIO, but for the meantime we can show
-        // a progress spinner.
-        // TODO: Reimplement the Loader to actually work
-        //notes = FileManager.getNotes(this);
-    }
-    
-    /*
-     * (non-Javadoc)
-     * @see android.app.Activity#onResume()
-     */
-    @Override
-    protected void onResume()
-    {
-    	super.onResume();
-    }
+			@Override
+			public boolean onCreateActionMode(ActionMode mode, Menu menu)
+			{
+				// TODO Auto-generated method stub
+				MenuInflater inflater = mode.getMenuInflater();
+				inflater.inflate(R.menu.main_context, menu);
+				return true;
+			}
 
-	/*
-	 * (non-Javadoc)
-	 * @see android.app.Activity#onPause()
-	 * Called when the activity is no longer considered to be in the
-	 * foreground. User data is saved here, since other app states can
-	 * be killed by Android.
-	 */
-    @Override
-    protected void onPause()
-    {
-    	super.onPause();
-    }
-    
-    /*
-     * (non-Javadoc)
-     * @see android.app.Activity#onSaveInstanceState(android.os.Bundle)
-     */
-    @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState)
-    {
-    	// The activity is being destroyed. Save our data into the bundle.
-    	savedInstanceState.putSerializable(KEY_NOTES_BUNDLE, this.notes);
-    }
-    @Override
-    
-    /*
-     * (non-Javadoc)
-     * @see android.app.Activity#onRestoreInstanceState(android.os.Bundle)
-     */
-    protected void onRestoreInstanceState(Bundle savedInstanceState)
-    {
-    	this.notes = (NotesFile) savedInstanceState.get(KEY_NOTES_BUNDLE);
+			@Override
+			public void onDestroyActionMode(ActionMode mode)
+			{
+				// TODO Auto-generated method stub
+				
+			}
 
-    }
-    
-    /*
-     * (non-Javadoc)
-     * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-    	switch (item.getItemId())
-    	{
-    	case (R.id.action_new):
-    		Intent intent = new Intent(this, NewNoteActivity.class);
-    		intent.putExtra(
-    				KEY_NEW_NOTE_ENTRY, this.quickEntry.getText().toString());
-    		startActivity(intent);
-    		return true;
-    	case (R.id.action_archive):
-    		// TODO: Intent to ArchiveView
-    		return true;
-    	case (R.id.action_settings):
-    		// TODO: Intent to Settings
-    		return true;
-    	default:
-    		return super.onOptionsItemSelected(item);
-    	}
-    }
-    
-    /*
-     * Layout Callbacks
-     */
-    private void onClickQuickNote()
-    {
-    	//EditText entry = (EditText) this.findViewById(R.id.editTextQuickNote);
-    	String msg = this.quickEntry.getText().toString();
-    	
-    	// Don't do anything if there hasn't been any input.
-    	if (msg.trim().isEmpty()) return;
-    	
-    	// Add the new entry as a note with only title.
-    	this.notes.add(
-    			new Note(msg, null, null));
-    	this.notesAdapter.notifyDataSetChanged();
-    	
-    	// Clear the EditText and the cached text.
-    	this.quickEntry.clearFocus();
-    	this.quickEntry.setText("");
-    }
-    
-    /*
-     * Auxiliary
-     */
-	private void generateData(NotesFile notes)
-	{
-		notes.add(new Note("Hello!", null, null));
-		notes.add(new Note("World!", "This is a test", new Date()));
-		notes.add(new Note("Foo!", "And another test.", null));
-		notes.add(new Note("Bar!", "And yet another test.", null));
-	}
-	
-	private void logList()
-	{
-		for (Note n : this.notes.getAll())
-		{
-			Log.d("logList", n.getTitle());
-		}
+			@Override
+			public boolean onPrepareActionMode(ActionMode mode, Menu menu) 
+			{
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+        });
+        this.noteList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 	}
 }

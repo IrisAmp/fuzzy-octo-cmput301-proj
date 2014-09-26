@@ -33,6 +33,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -218,13 +220,20 @@ extends Activity
         	
         });
         // Attach a multi choice listener to the ListView
+        this.noteList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         this.noteList.setMultiChoiceModeListener(new MultiChoiceModeListener()
-        {
+        {	
+        	private int numSelected = 0;
+        	
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item)
 			{
 				switch (item.getItemId())
 				{
+				case R.id.action_delete:
+					numSelected = 0;
+					MainActivity.this.notesAdapter.clearSelection();
+					mode.finish();
 				default:
 					return false;
 				}
@@ -233,7 +242,7 @@ extends Activity
 			@Override
 			public boolean onCreateActionMode(ActionMode mode, Menu menu)
 			{
-				// TODO Auto-generated method stub
+				this.numSelected = 0;
 				MenuInflater inflater = mode.getMenuInflater();
 				inflater.inflate(R.menu.main_context, menu);
 				return true;
@@ -242,24 +251,41 @@ extends Activity
 			@Override
 			public void onDestroyActionMode(ActionMode mode)
 			{
-				// TODO Auto-generated method stub
-				
+				MainActivity.this.notesAdapter.clearSelection();
 			}
 
 			@Override
 			public boolean onPrepareActionMode(ActionMode mode, Menu menu) 
 			{
-				// TODO Auto-generated method stub
 				return false;
 			}
 
 			@Override
 			public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked)
 			{
-				// TODO Auto-generated method stub
+				if (checked)
+				{
+					this.numSelected ++;
+					MainActivity.this.notesAdapter.setSelection(position, checked);
+				}
+				else
+				{
+					this.numSelected --;
+					MainActivity.this.notesAdapter.removeSelection(position);
+				}
 				
+				mode.setTitle(this.numSelected + " selected");
 			}
         });
-        this.noteList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        this.noteList.setOnItemLongClickListener(new OnItemLongClickListener()
+        {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long arg3)
+			{
+				MainActivity.this.noteList.setItemChecked(position, !MainActivity.this.notesAdapter.isChecked(position));
+				return false;
+			}
+        	
+        });
 	}
 }

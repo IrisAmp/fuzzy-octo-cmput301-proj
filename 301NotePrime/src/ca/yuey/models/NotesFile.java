@@ -32,6 +32,7 @@ package ca.yuey.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class NotesFile
 implements Serializable
@@ -58,6 +59,15 @@ implements Serializable
 	public void addToArchive(Note item)
 	{
 		this.archive.add(item);
+	}
+	
+	public boolean remove(Note killMe)
+	{
+		return this.data.remove(killMe);
+	}
+	public boolean removeFromArchive(Note killMe)
+	{
+		return this.archive.remove(killMe);
 	}
 	
 	public Note get(int position)

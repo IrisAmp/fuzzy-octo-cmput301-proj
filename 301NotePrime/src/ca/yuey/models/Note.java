@@ -152,16 +152,13 @@ implements Serializable, Comparable<Note>
 		if (x != 0) return x;
 		
 		// Comepare due dates.
-		x = this.due.compareTo(other.due);
-		if (x != 0) return x;
-		/*
+
 		if(this.due != null && other.due != null)
 			return this.due.compareTo(other.due);
 		if(this.due != null)
-			return -1;
-		if(other.due != null)
 			return 1;
-		*/
+		if(other.due != null)
+			return -1;
 		
 		// Compare creation dates
 		return this.created.compareTo(other.created);

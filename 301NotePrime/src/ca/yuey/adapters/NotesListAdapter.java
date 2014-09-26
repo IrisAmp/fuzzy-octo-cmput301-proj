@@ -23,6 +23,8 @@ package ca.yuey.adapters;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Set;
 
 import android.app.Activity;
 import android.content.Context;
@@ -40,6 +42,7 @@ extends BaseAdapter
 {
 	private LayoutInflater mInflater = null;
 	private NotesFile data;
+	private HashMap<Integer, Boolean> selection = new HashMap<Integer, Boolean>();
 	private final boolean archive;
 	
 	public NotesListAdapter(Context context, NotesFile data, boolean archive)
@@ -75,6 +78,38 @@ extends BaseAdapter
 		return position;
 	}
 
+	// Selection =========================
+	public void setSelection(int position, boolean value)
+	{
+		this.selection.put(position, value);
+		this.notifyDataSetChanged();
+	}
+
+	public void removeSelection(int position)
+	{
+		this.selection.remove(position);
+		this.notifyDataSetChanged();
+	}
+
+	public boolean isChecked(int position)
+	{
+		Boolean res = this.selection.get(position);
+		if (res != null)
+			return res;
+		else return false;
+	}
+	
+	public Set<Integer> getCheckedPos()
+	{
+		return this.selection.keySet();
+	}
+	
+	public void clearSelection()
+	{
+		this.selection = new HashMap<Integer, Boolean>();
+		this.notifyDataSetChanged();
+	}
+	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
@@ -102,22 +137,12 @@ extends BaseAdapter
 		if (strings.get(2) == null) due.setVisibility(View.GONE);
 			else due.setText("Due: " + strings.get(2));
 		
-		Date dueDate = item.getDue();
-		if (dueDate != null)
-		{
-			long diff = diffTime(dueDate);
-			if (diff < 0)
-				due.setTextColor(0xFFFF4444);
-			else if (diff < (60 * 60 * 60))
-				due.setTextColor(0xFFFFBB33);
-		}
+		if (selection.get(position) != null)
+			convertView.findViewById(R.id.noteItemBackground).setBackgroundColor(0x4033b5e5);
+		else
+			convertView.findViewById(R.id.noteItemBackground).setBackgroundColor(0xFFFFFFFF);
 		
 		// Ship it back
 		return convertView;
-	}
-	
-	private long diffTime(Date d)
-	{
-		return d.getTime() - (new Date().getTime());
 	}
 }

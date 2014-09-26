@@ -22,6 +22,7 @@
 package ca.yuey.adapters;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -80,7 +81,13 @@ extends BaseAdapter
 		return position;
 	}
 
-	// Selection =========================
+	public void add(Note item)
+	{
+		this.data.add(item);
+		this.notifyDataSetChanged();
+	}
+	
+	// Selection =============================================================
 	public void setSelection(int position, boolean value)
 	{
 		this.selection.put(position, value);
@@ -109,6 +116,15 @@ extends BaseAdapter
 	public void clearSelection()
 	{
 		this.selection = new HashMap<Integer, Boolean>();
+		this.notifyDataSetChanged();
+	}
+	
+	public void archiveSelection()
+	{
+		ArrayList<Integer> indicies = new ArrayList<Integer>(this.selection.keySet());
+		Collections.sort(indicies, Collections.reverseOrder());
+		for (int i : indicies)
+			this.data.remove(i);
 		this.notifyDataSetChanged();
 	}
 	

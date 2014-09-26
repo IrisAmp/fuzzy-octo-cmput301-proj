@@ -112,4 +112,9 @@ implements Serializable
 	{
 		return (ArrayList<Note>) this.data.clone();
 	}
+
+	public void remove(int i)
+	{
+		this.data.remove(i);
+	}
 }

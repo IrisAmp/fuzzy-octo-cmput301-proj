@@ -148,9 +148,8 @@ extends Activity
     		{
     			Note incomingNote = (Note) data.getExtras().get(ComposeNoteActivity.KEY_COMPLETED_NOTE_ITEM);
     			if (incomingNote != null)
-    				this.notes.add(incomingNote);
+    				this.notesAdapter.add(incomingNote);
     			else Log.e("ca.yuey.noteprime301.MainActivity.onActivityResult(int, int, Intent)", "ComposeNoteActivity returned success, but the data returned was null.");
-    			this.notesAdapter.notifyDataSetChanged();
     		}
     		break;
     	}
@@ -168,9 +167,8 @@ extends Activity
     	if (msg.trim().isEmpty()) return;
     	
     	// Add the new entry as a note with only title.
-    	this.notes.add(
+    	this.notesAdapter.add(
     			new Note(msg, null, null));
-    	this.notesAdapter.notifyDataSetChanged();
     	
     	// Clear the EditText and the cached text.
     	this.quickEntry.clearFocus();
@@ -228,11 +226,13 @@ extends Activity
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item)
 			{
+				MainActivity host = MainActivity.this;
 				switch (item.getItemId())
 				{
 				case (R.id.action_archive_selected):
 					numSelected = 0;
-					MainActivity.this.notesAdapter.clearSelection();
+					host.notesAdapter.archiveSelection();
+					host.notesAdapter.clearSelection();
 					mode.finish();
 				case (R.id.action_edit_selection):
 					
